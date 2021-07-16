@@ -20,7 +20,7 @@ public class MutexKNN implements KNN {
 	private double[][] dataTrain, dataTest;
 	private ReentrantLock mutex;
 	protected int hits;
-	protected int numThreads;
+	protected int numThreads, numInstances;
 	
 	/**
 	 * Parameterized constructor
@@ -35,25 +35,27 @@ public class MutexKNN implements KNN {
 	 * Implementation k-NN algorithm
 	 */
 	@Override
-	public void getKNN() {			
+	public void getKNN() throws InterruptedException {			
 		System.out.println("Executing k-NN with k=" + this.k + "...");
+		Thread[] threads = new Thread[this.numThreads];
 		
-		for(double[] element : this.dataTest) {	
-			while(this.numThreads <= 0) {
-				System.out.println("Waiting for threads to end...");
-			}
-			
-			CalculatePredictionThread thread = new CalculatePredictionThread(element);
-			thread.start();
+		for(int i = 0; i < this.numThreads; i++){
+		    threads[i] = new PredictionThread(i*this.dataTest.length/this.numThreads, (i+1)*(this.dataTest.length/this.numThreads));
+		    threads[i].start();
+		}			
+	
+		for(Thread t: threads) {
+			t.join();			
 		}
 		
-		System.out.println("Accuracy: " + this.hits/(double)this.dataTest.length + "%");
+		System.out.println("Accuracy: " + this.hits/(double)this.dataTest.length*100 + "%");
+		System.out.println("Hits: " + this.hits + " | DataTest: "+ this.dataTest.length);
 	}
 	
 	/**
 	 * Calculate prediction 
 	 */
-	int calculatePrediction(double[] element) {
+	int getPrediction(double[] element) {
 		SortedMap<Double, Double> kNeighbors = new TreeMap<Double, Double>();
 		
 		for(int j=0; j<this.dataTrain.length; j++) {
@@ -80,41 +82,48 @@ public class MutexKNN implements KNN {
 		}
 		
 		if(outcome < this.k-outcome) {
-			if(element[element.length-1] == 0) {
-				return 1;
-			} 
+			if(element[element.length-1] == 0) return 1;
 		} else {
-			if(element[element.length-1] == 1) {
-				return 1;
-			}
+			if(element[element.length-1] == 1) return 1;
 		}
 		
 		return 0;
 	}
 
 	@Override
-	public void setDataTrain(String path, int instances) throws IOException {
-		this.dataTrain = CSVReader.read(path, instances);
+	public void setDataTrain(String path, int numInstances) throws IOException, InterruptedException {
+		this.dataTrain = CSVReader.read(path, numInstances);
 	}
 
 	@Override
-	public void setDataTest(String path, int instances) throws IOException {
-		this.dataTest = CSVReader.read(path, instances);
+	public void setDataTest(String path, int numInstances) throws IOException, InterruptedException {
+		this.dataTest = CSVReader.read(path, numInstances);
 	}
 	
-	class CalculatePredictionThread extends Thread {
+	/**
+	 * Thread class
+	 * @author rannaraabe
+	 */
+	class PredictionThread extends Thread {
 		
-		private double[] element;
+		private int l;
+		private int r;
 		
-		public CalculatePredictionThread(double[] element) {
-			this.element = element;
+		public PredictionThread(int l, int r) {
+			this.l = l;
+			this.r = r;
 		}
 		
 		@Override
 		public void run() {
-			MutexKNN.this.numThreads--;
-			MutexKNN.this.hits += calculatePrediction(element);
-			MutexKNN.this.numThreads++;
+			for(int i=this.l; i<this.r; i++) {
+				int result = getPrediction(MutexKNN.this.dataTest[i]);
+				MutexKNN.this.mutex.lock();
+				MutexKNN.this.hits += result;
+				MutexKNN.this.mutex.unlock();
+			}
+			
+			System.out.println("Finished thread: [" + this.l +", " + this.r +")");
 		}
 		
 	}

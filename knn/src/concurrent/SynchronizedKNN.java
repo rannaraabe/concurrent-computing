@@ -19,13 +19,13 @@ public class SynchronizedKNN implements KNN {
 	}
 	
 	@Override
-	public void setDataTrain(String path, int instances) throws IOException {
-		this.dataTrain = CSVReader.read(path, instances);
+	public void setDataTrain(String path, int numInstances) throws IOException, InterruptedException {
+		this.dataTrain = CSVReader.read(path, numInstances);
 	}
 
 	@Override
-	public void setDataTest(String path, int instances) throws IOException {
-		this.dataTest = CSVReader.read(path, instances);
+	public void setDataTest(String path, int numInstances) throws IOException, InterruptedException {
+		this.dataTest = CSVReader.read(path, numInstances);
 	}
 
 	@Override

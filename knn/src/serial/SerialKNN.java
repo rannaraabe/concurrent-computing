@@ -30,16 +30,17 @@ public class SerialKNN implements KNN {
 		int hits = 0;
 		
 		for(double[] element : this.dataTest) {
-			hits += calculatePrediction(element);
+			hits += getPrediction(element);
 		}
 		
 		System.out.println("Accuracy: " + hits/(double)this.dataTest.length*100 + "%");
+		System.out.println("Hits: " + hits + " | DataTest: "+ this.dataTest.length);
 	}
 	
 	/**
 	 * Calculate prediction 
 	 */
-	int calculatePrediction(double[] element) {
+	int getPrediction(double[] element) {
 		SortedMap<Double, Double> kNeighbors = new TreeMap<Double, Double>();
 		
 		for(int j=0; j<this.dataTrain.length; j++) {
@@ -63,25 +64,21 @@ public class SerialKNN implements KNN {
 		}
 		
 		if(outcome < this.k-outcome) {
-			if(element[element.length-1] == 0) {
-				return 1;
-			} 
+			if(element[element.length-1] == 0) return 1;
 		} else {
-			if(element[element.length-1] == 1) {
-				return 1;
-			}
+			if(element[element.length-1] == 1) return 1;
 		}
 		
 		return 0;
 	}
 
 	@Override
-	public void setDataTrain(String path, int instances) throws IOException {
-		this.dataTrain = CSVReader.read(path, instances);
+	public void setDataTrain(String path, int numInstances) throws IOException, InterruptedException {
+		this.dataTrain = CSVReader.read(path, numInstances);
 	}
 
 	@Override
-	public void setDataTest(String path, int instances) throws IOException {
-		this.dataTest = CSVReader.read(path, instances);
+	public void setDataTest(String path, int numInstances) throws IOException, InterruptedException {
+		this.dataTest = CSVReader.read(path, numInstances);
 	}
 }

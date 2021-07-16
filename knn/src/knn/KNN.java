@@ -4,8 +4,8 @@ import java.io.IOException;
 
 public interface KNN {
 	
-	void setDataTrain(String path, int instances) throws IOException;
-	void setDataTest(String path, int instances) throws IOException;
-	void getKNN();
+	void setDataTrain(String path, int numInstances) throws IOException, InterruptedException;
+	void setDataTest(String path, int numInstances) throws IOException, InterruptedException;
+	void getKNN() throws InterruptedException;
 
 }
