@@ -6,13 +6,6 @@ import java.io.IOException;
 
 public class CSVReader {
     
-    /**
-     * Default constructor
-     */
-    public CSVReader() {
-    	
-	}
-    
 	/**
 	 * Read CSV file
 	 */
@@ -23,7 +16,6 @@ public class CSVReader {
 	    int column = 0;
      
    	 	try (BufferedReader bufferedReader = new BufferedReader(fileReader)) {
-   	 		
    		 	String row;
    		 	while((row = bufferedReader.readLine()) != null) {
 	   		 	if(line >= numInstances) {

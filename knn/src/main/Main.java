@@ -22,15 +22,15 @@ public class Main {
 	
     private static final String DATA_FILE = "/home/rannaraabe/Documents/concurrent-computing/data/diabetes.csv"; 			//[40000000][9]
     private static final int NUM_THREADS_EXECUTE = 8;
-    private static final int NUM_INSTANCES_EXECUTE = 4000000;
+    private static final int NUM_INSTANCES_EXECUTE = 400000;
     static int k = 5;
     
     static DecimalFormat df = new DecimalFormat("#.###");
     
 	public static void main(String[] args) throws NumberFormatException, IOException, InterruptedException {
-		runSerial(k);
-		runMutex(k);
 		runAtomic(k);
+		runMutex(k);
+		runSerial(k);
 	}
 	
 	public static void runSerial(int k) throws IOException, InterruptedException {
