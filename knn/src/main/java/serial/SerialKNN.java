@@ -32,7 +32,8 @@ public class SerialKNN extends AbstractKNN {
 	/**
 	 * Calculate prediction 
 	 */
-	int getPrediction(double[] element) {
+	@Override
+	public int getPrediction(double[] element) {
 		SortedMap<Double, Double> kNeighbors = new TreeMap<Double, Double>();
 		
 		for(double[] neighbor : this.dataTrain) {

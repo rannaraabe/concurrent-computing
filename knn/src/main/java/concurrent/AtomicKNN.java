@@ -2,23 +2,22 @@ package concurrent;
 
 import java.util.SortedMap;
 import java.util.TreeMap;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import knn.AbstractKNN;
 
-public class MutexKNN extends AbstractKNN {
-	
-	private int hits;
-	private ReentrantLock mutex;
+public class AtomicKNN extends AbstractKNN {
+	 
+	protected AtomicInteger hits;
 	protected int numThreads, numInstances;
 	
 	/**
 	 * Parameterized constructor
 	 */
-	public MutexKNN(int k, int numThreads){
+	public AtomicKNN(int k, int numThreads){
 		this.k = k;
-		this.mutex = new ReentrantLock();
 		this.numThreads = numThreads;
+		this.hits = new AtomicInteger(0);
 	} 
 	
 	/**
@@ -38,19 +37,17 @@ public class MutexKNN extends AbstractKNN {
 			t.join();			
 		}
 		
-		this.printResults(this.hits);
+		this.printResults(this.hits.intValue());
 	}
 	
 	/**
 	 * Calculate prediction 
 	 */
-	int getPrediction(double[] element) {
+	@Override
+	public int getPrediction(double[] element) {
 		SortedMap<Double, Double> kNeighbors = new TreeMap<Double, Double>();
 		
-		for(int j=0; j<this.dataTrain.length; j++) {
-			this.mutex.lock();
-			double[] neighbor = this.dataTrain[j];
-			this.mutex.unlock();
+		for(double[] neighbor : this.dataTrain) {
 			updateNeighbors(kNeighbors, neighbor, element);	
 		}
 
@@ -74,10 +71,11 @@ public class MutexKNN extends AbstractKNN {
 		@Override
 		public void run() {
 			for(int i=this.l; i<this.r; i++) {
-				int result = getPrediction(MutexKNN.this.dataTest[i]);
-				MutexKNN.this.mutex.lock();
-				MutexKNN.this.hits += result;
-				MutexKNN.this.mutex.unlock();
+				int result = getPrediction(AtomicKNN.this.dataTest[i]);
+				
+				if(result == 1) {						
+					AtomicKNN.this.hits.incrementAndGet();
+				}
 			}
 		}
 		

@@ -25,7 +25,8 @@ public abstract class AbstractKNN implements KNN {
 	/**
 	 * Calculate Euclidean distance between two points
 	 */
-	protected static double getDistance(double[] vector1, double[] vector2) {
+	@Override
+	public double getDistance(double[] vector1, double[] vector2) {
 		double sum = 0.0;
 		
 		for(int i=0; i<vector1.length-1; i++) {
@@ -57,7 +58,8 @@ public abstract class AbstractKNN implements KNN {
 	/**
 	 * Check if neighbor is should be between k-nearest neighbors
 	 */
-	protected void updateNeighbors(SortedMap<Double, Double> kNeighbors, double[] neighbor, double[] element) {
+	@Override
+	public void updateNeighbors(SortedMap<Double, Double> kNeighbors, double[] neighbor, double[] element) {
 		double distance = 0.0;
 		distance = getDistance(element, neighbor);
 		
