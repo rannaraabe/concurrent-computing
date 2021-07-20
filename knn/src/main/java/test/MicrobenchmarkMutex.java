@@ -35,7 +35,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.SortedMap;
 import java.util.TreeMap;
-import java.util.concurrent.locks.ReentrantLock;
 
 import org.openjdk.jmh.annotations.*;
 
@@ -80,7 +79,7 @@ public class MicrobenchmarkMutex {
 			int l = k*(dataTest.length/NUM_THREADS_EXECUTE);
 			int r = (k+1)*(dataTest.length/NUM_THREADS_EXECUTE);
 			
-			MicrobenchmarkMutex.threads[k] = new Thread(new Runnable() {
+			threads[k] = new Thread(new Runnable() {
 				public void run() {
 			    	for(int i=l; i<r; i++) {
 			    		double[] element = dataTest[i];
@@ -88,10 +87,10 @@ public class MicrobenchmarkMutex {
 					}
 				}
 			});
-			MicrobenchmarkMutex.threads[k].start();
+			threads[k].start();
 		}	
 
-		for(Thread t : MicrobenchmarkMutex.threads) {
+		for(Thread t : threads) {
 			try {
 				t.join();
 			} catch (InterruptedException e) {
@@ -123,10 +122,10 @@ public class MicrobenchmarkMutex {
 				}
 			});
 			
-			MicrobenchmarkMutex.threads[k].start();
+			threads[k].start();
     	}
 			
-		for(Thread t : MicrobenchmarkMutex.threads) {		
+		for(Thread t : threads) {		
 			try {
 				t.join();
 			} catch (InterruptedException e) {

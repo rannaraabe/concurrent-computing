@@ -36,7 +36,6 @@ import java.io.IOException;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.locks.ReentrantLock;
 
 import org.openjdk.jmh.annotations.*;
 
@@ -60,7 +59,7 @@ public class MicrobenchmarkAtomic {
         
         @Setup
         public void setupBenchmark() throws FileNotFoundException, IOException, InterruptedException {
-            this.knn = new SerialAtomic(k, NUM_THREADS_EXECUTE);
+            this.knn = new AtomicKNN(k, NUM_THREADS_EXECUTE);
             threads = new Thread[NUM_THREADS_EXECUTE]; 
             
         	dataTrain = CSVReader.read(DATA_FILE, NUM_INSTANCES_EXECUTE);
@@ -82,18 +81,22 @@ public class MicrobenchmarkAtomic {
 			int l = k*(dataTest.length/NUM_THREADS_EXECUTE);
 			int r = (k+1)*(dataTest.length/NUM_THREADS_EXECUTE);
 			
-			MicrobenchmarkMutex.threads[k] = new Thread(new Runnable() {
+			threads[k] = new Thread(new Runnable() {
 				public void run() {
 			    	for(int i=l; i<r; i++) {
 			    		double[] element = dataTest[i];
-						hits = state.knn.getPrediction(element);
+						int result = state.knn.getPrediction(element);
+						
+						if(result == 1) {						
+							hits.incrementAndGet();
+						}
 					}
 				}
 			});
-			MicrobenchmarkMutex.threads[k].start();
+			threads[k].start();
 		}	
 
-		for(Thread t : MicrobenchmarkMutex.threads) {
+		for(Thread t : threads) {
 			try {
 				t.join();
 			} catch (InterruptedException e) {
@@ -125,10 +128,10 @@ public class MicrobenchmarkAtomic {
 				}
 			});
 			
-			MicrobenchmarkMutex.threads[k].start();
+			threads[k].start();
     	}
 			
-		for(Thread t : MicrobenchmarkMutex.threads) {		
+		for(Thread t : threads) {		
 			try {
 				t.join();
 			} catch (InterruptedException e) {
