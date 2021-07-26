@@ -45,8 +45,8 @@ import serial.*;
 public class MicrobenchmarkSerial {
 
 	private static final String DATA_FILE = "/home/rannaraabe/Documents/concurrent-computing/data/diabetes.csv"; 
-    private static final int NUM_INSTANCES_EXECUTE = 400000;
-    static int k = 200, hits;
+    private static final int NUM_INSTANCES_EXECUTE = 40000000;
+    static int k = 2000, hits;
     static double[][] dataTrain, dataTest;
     
     @State(Scope.Thread)
@@ -58,10 +58,10 @@ public class MicrobenchmarkSerial {
             this.knn = new SerialKNN(k);
         	
         	dataTrain = CSVReader.read(DATA_FILE, NUM_INSTANCES_EXECUTE);
-        	dataTest = CSVReader.read(DATA_FILE, NUM_INSTANCES_EXECUTE/10);
+        	dataTest = CSVReader.read(DATA_FILE, 200);
         	
         	this.knn.setDataTrain(DATA_FILE, NUM_INSTANCES_EXECUTE);
-        	this.knn.setDataTest(DATA_FILE, NUM_INSTANCES_EXECUTE/10);
+        	this.knn.setDataTest(DATA_FILE, 200);
         }
     }
 

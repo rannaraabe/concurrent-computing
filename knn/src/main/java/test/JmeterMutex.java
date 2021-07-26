@@ -7,10 +7,10 @@ import org.apache.jmeter.protocol.java.sampler.AbstractJavaSamplerClient;
 import org.apache.jmeter.protocol.java.sampler.JavaSamplerContext;
 import org.apache.jmeter.samplers.SampleResult;
 
+import concurrent.*;
 import knn.KNN;
-import serial.SerialKNN;
 
-public class JmeterSerial extends AbstractJavaSamplerClient implements Serializable {
+public class JmeterMutex extends AbstractJavaSamplerClient implements Serializable {
 
 	private static final String DATA_FILE = "/home/rannaraabe/Documents/concurrent-computing/data/diabetes.csv"; 
     private static final int NUM_INSTANCES_EXECUTE = 40000000;
@@ -19,19 +19,22 @@ public class JmeterSerial extends AbstractJavaSamplerClient implements Serializa
     public Arguments getDefaultParameters() {
         Arguments defaultParameters = new Arguments();
         defaultParameters.addArgument("k", "2000");
+        defaultParameters.addArgument("numThreads", "4");
         return defaultParameters; 
     } 
 	   
     @Override 
     public SampleResult runTest(JavaSamplerContext javaSamplerContext) {
         String kStr = javaSamplerContext.getParameter("k");
+        String numThreadsStr = javaSamplerContext.getParameter("numThreads");
         int k = Integer.parseInt(kStr);
+        int numThreads = Integer.parseInt(numThreadsStr);
         
         SampleResult result = new SampleResult();
         result.sampleStart();
 
         try {
-        	KNN knn = new SerialKNN(k);
+        	KNN knn = new MutexKNN(k, numThreads);
 
         	System.out.println("Reading files...");
             knn.setDataTrain(DATA_FILE, NUM_INSTANCES_EXECUTE);
@@ -47,6 +50,11 @@ public class JmeterSerial extends AbstractJavaSamplerClient implements Serializa
         	result.sampleEnd();
             result.setSuccessful(false);
             result.setResponseMessage("Exception: " + e);
+
+            java.io.StringWriter stringWriter = new java.io.StringWriter();
+            e.printStackTrace(new java.io.PrintWriter(stringWriter));
+            result.setResponseData(stringWriter.toString());
+            result.setDataType(org.apache.jmeter.samplers.SampleResult.TEXT);
             result.setResponseCode("500");
         }
               

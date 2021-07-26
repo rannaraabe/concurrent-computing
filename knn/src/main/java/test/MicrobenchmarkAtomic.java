@@ -46,8 +46,8 @@ import concurrent.*;
 public class MicrobenchmarkAtomic {
 
 	private static final String DATA_FILE = "/home/rannaraabe/Documents/concurrent-computing/data/diabetes.csv"; 
-    private static final int NUM_INSTANCES_EXECUTE = 400000;
-    private static final int NUM_THREADS_EXECUTE = 8;
+    private static final int NUM_INSTANCES_EXECUTE = 40000000;
+    private static final int NUM_THREADS_EXECUTE = 4;
     static int k = 2000;
     static AtomicInteger hits;
     static double[][] dataTrain, dataTest;
@@ -63,10 +63,12 @@ public class MicrobenchmarkAtomic {
             threads = new Thread[NUM_THREADS_EXECUTE]; 
             
         	dataTrain = CSVReader.read(DATA_FILE, NUM_INSTANCES_EXECUTE);
-        	dataTest = CSVReader.read(DATA_FILE, NUM_INSTANCES_EXECUTE/10);
+        	dataTest = CSVReader.read(DATA_FILE, 200);
         	
         	this.knn.setDataTrain(DATA_FILE, NUM_INSTANCES_EXECUTE);
-        	this.knn.setDataTest(DATA_FILE, NUM_INSTANCES_EXECUTE/10);
+        	this.knn.setDataTest(DATA_FILE, 200);
+        	
+        	hits = new AtomicInteger(0);
         }
     }
 
@@ -77,7 +79,6 @@ public class MicrobenchmarkAtomic {
     @Fork(value=1)
     public int testPredict(BenchmarkState state) throws InterruptedException, IOException {    	
     	for(int k = 0; k < NUM_THREADS_EXECUTE; k++) {	
-			// Left, Right: Indexes of the test dataset that the current thread is responsible (size: NUM_INSTANCES_TEST/NUM_THREADS per thread)
 			int l = k*(dataTest.length/NUM_THREADS_EXECUTE);
 			int r = (k+1)*(dataTest.length/NUM_THREADS_EXECUTE);
 			
@@ -112,7 +113,7 @@ public class MicrobenchmarkAtomic {
     @BenchmarkMode(Mode.Throughput)
     @Fork(value=1)
     public void testDistance(BenchmarkState state) throws InterruptedException, IOException {
-    	for(int k=0; k<NUM_INSTANCES_EXECUTE; k++) {
+    	for(int k=0; k<NUM_THREADS_EXECUTE; k++) {
     		int l = k*(dataTest.length/NUM_THREADS_EXECUTE);
 			int r = (k+1)*(dataTest.length/NUM_THREADS_EXECUTE);
     		

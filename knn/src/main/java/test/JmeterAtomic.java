@@ -10,16 +10,16 @@ import org.apache.jmeter.samplers.SampleResult;
 import concurrent.*;
 import knn.KNN;
 
-public class JmeterConcurrent extends AbstractJavaSamplerClient implements Serializable {
+public class JmeterAtomic extends AbstractJavaSamplerClient implements Serializable {
 
 	private static final String DATA_FILE = "/home/rannaraabe/Documents/concurrent-computing/data/diabetes.csv"; 
-    private static final int NUM_INSTANCES_EXECUTE = 400000;
+    private static final int NUM_INSTANCES_EXECUTE = 40000000;
 	
 	@Override 
     public Arguments getDefaultParameters() {
         Arguments defaultParameters = new Arguments();
-        defaultParameters.addArgument("k", "200");
-        defaultParameters.addArgument("numThreads", "8");
+        defaultParameters.addArgument("k", "2000");
+        defaultParameters.addArgument("numThreads", "4");
         return defaultParameters; 
     } 
 	   
@@ -34,12 +34,11 @@ public class JmeterConcurrent extends AbstractJavaSamplerClient implements Seria
         result.sampleStart();
 
         try {
-        	KNN knn = new MutexKNN(k, numThreads);
-//        	KNN knn = new AtomicKNN(k, numThreads);
+        	KNN knn = new AtomicKNN(k, numThreads);
 
         	System.out.println("Reading files...");
             knn.setDataTrain(DATA_FILE, NUM_INSTANCES_EXECUTE);
-        	knn.setDataTest(DATA_FILE, NUM_INSTANCES_EXECUTE/10);
+        	knn.setDataTest(DATA_FILE, 200);
             
         	knn.getKNN();
             
