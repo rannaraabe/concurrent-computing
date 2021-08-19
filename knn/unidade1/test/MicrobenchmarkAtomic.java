@@ -55,7 +55,7 @@ public class MicrobenchmarkAtomic {
     
     @State(Scope.Thread)
     public static class BenchmarkState {
-        public KNN knn;
+        public InterfaceKNN knn;
         
         @Setup
         public void setupBenchmark() throws FileNotFoundException, IOException, InterruptedException {

@@ -7,7 +7,7 @@ import org.apache.jmeter.protocol.java.sampler.AbstractJavaSamplerClient;
 import org.apache.jmeter.protocol.java.sampler.JavaSamplerContext;
 import org.apache.jmeter.samplers.SampleResult;
 
-import knn.KNN;
+import knn.InterfaceKNN;
 import serial.SerialKNN;
 
 public class JmeterSerial extends AbstractJavaSamplerClient implements Serializable {
@@ -31,7 +31,7 @@ public class JmeterSerial extends AbstractJavaSamplerClient implements Serializa
         result.sampleStart();
 
         try {
-        	KNN knn = new SerialKNN(k);
+        	InterfaceKNN knn = new SerialKNN(k);
 
         	System.out.println("Reading files...");
             knn.setDataTrain(DATA_FILE, NUM_INSTANCES_EXECUTE);

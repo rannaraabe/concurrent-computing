@@ -17,6 +17,7 @@ public class Main {
 	enum KNNType {
 		FORK_JOIN,
 		CALLABLE_FUTURE,
+		PARALLEL_STREAMS,
 	}
 	
     private static final String DATA_FILE = "/home/rannaraabe/Documents/concurrent-computing/data/diabetes.csv"; 			//[40000000][9]
@@ -31,7 +32,8 @@ public class Main {
     
 	public static void main(String[] args) throws NumberFormatException, IOException, InterruptedException {
 //		runForkJoin(k);
-		runCallableFuture(k);
+//		runCallableFuture(k);
+		runParallelStreams(k);
 	}
 	
 	public static void runForkJoin(int k) throws IOException, InterruptedException {
@@ -40,8 +42,13 @@ public class Main {
 	}
 	
 	public static void runCallableFuture(int k) throws IOException, InterruptedException {
-		System.out.println(">>> Callable and Future k-NN <<<");
+		System.out.println(">>> Callable Future k-NN <<<");
 		runKNN(k, KNNType.CALLABLE_FUTURE);
+	}
+	
+	public static void runParallelStreams(int k) throws IOException, InterruptedException {
+		System.out.println(">>> Parallel Streams k-NN <<<");
+		runKNN(k, KNNType.PARALLEL_STREAMS);
 	}
 	
 	public static void runKNN(int k, KNNType knnType) throws IOException, InterruptedException {
@@ -54,6 +61,9 @@ public class Main {
 			break;
 		case CALLABLE_FUTURE:
 			knn = new CallableAndFuture(k, DATA_FILE, NUM_THREADS_EXECUTE);
+			break;
+		case PARALLEL_STREAMS:
+			knn = new ParallelStreams(k, NUM_THREADS_EXECUTE);
 			break;
 		default:
 			throw new IOException("Invalid KNN type!");

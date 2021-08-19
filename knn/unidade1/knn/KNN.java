@@ -11,5 +11,4 @@ public interface KNN {
 	int getPrediction(double[] element);
 	double getDistance(double[] vector1, double[] vector2);
 	void updateNeighbors(SortedMap<Double, Double> kNeighbors, double[] neighbor, double[] element);
-
 }

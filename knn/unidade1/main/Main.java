@@ -5,7 +5,7 @@ import java.text.DecimalFormat;
 
 import concurrent.AtomicKNN;
 import concurrent.MutexKNN;
-import knn.KNN;
+import knn.InterfaceKNN;
 import serial.SerialKNN;
 
 /**
@@ -50,7 +50,7 @@ public class Main {
 	
 	public static void runKNN(int k, KNNType knnType) throws IOException, InterruptedException {
 		long startTime = System.nanoTime();
-		KNN knn = null;
+		InterfaceKNN knn = null;
 
 		switch (knnType) {
 		case SERIAL:

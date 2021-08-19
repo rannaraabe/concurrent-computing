@@ -8,7 +8,7 @@ import org.apache.jmeter.protocol.java.sampler.JavaSamplerContext;
 import org.apache.jmeter.samplers.SampleResult;
 
 import concurrent.*;
-import knn.KNN;
+import knn.InterfaceKNN;
 
 public class JmeterAtomic extends AbstractJavaSamplerClient implements Serializable {
 
@@ -34,7 +34,7 @@ public class JmeterAtomic extends AbstractJavaSamplerClient implements Serializa
         result.sampleStart();
 
         try {
-        	KNN knn = new AtomicKNN(k, numThreads);
+        	InterfaceKNN knn = new AtomicKNN(k, numThreads);
 
         	System.out.println("Reading files...");
             knn.setDataTrain(DATA_FILE, NUM_INSTANCES_EXECUTE);

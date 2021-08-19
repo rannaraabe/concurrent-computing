@@ -128,7 +128,6 @@ public class CallableAndFuture implements InterfaceKNN {
 	/**
 	 * Check if element prediction is correct (returns 1)
 	 */
-	@Override
 	public void getOutcome(SortedMap<Double, Double> kNeighbours, double[] currTest) {
 		double resultSum  = 0.0;
 		for(Map.Entry<Double, Double> entry : kNeighbours.entrySet()) {
