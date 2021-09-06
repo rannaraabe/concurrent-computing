@@ -7,11 +7,8 @@ import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 
 public class Spark {
-	 public static final String path = "/home/rannaraabe/Documents/concurrent-computing/data/diabetes.csv";
-	 public static final String pathNoHeader = "/home/rannaraabe/Documents/concurrent-computing/data/diabetes2.csv";
 	 public Integer sizeTrain;
-	 public static final Integer lines_300MB = 40000;
-	 public Integer k = 5;
+	 public Integer k;
 	 private JavaRDD<String> dataTest;
 	 private Double[][] dataTrain;
      static DecimalFormat df = new DecimalFormat("#.###");

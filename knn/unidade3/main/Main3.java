@@ -20,8 +20,8 @@ public class Main3 {
 	}
 	
     private static final String DATA_FILE = "/home/rannaraabe/Documents/concurrent-computing/data/diabetes2.csv"; 			//[40000000][9]
-    private static final int NUM_INSTANCES_EXECUTE = 4000;	// 400000
-    static int k = 5;
+    private static final int NUM_INSTANCES_EXECUTE = 40000000;	// 400000
+    static int k = 2000;
     static DecimalFormat df = new DecimalFormat("#.###");
     
     // train 200
@@ -51,7 +51,7 @@ public class Main3 {
 
 		switch (knnType) {
 		case SPARK:
-			knn = new Spark(DATA_FILE, k, NUM_INSTANCES_EXECUTE, NUM_INSTANCES_EXECUTE/2, conf);
+			knn = new Spark(DATA_FILE, k, NUM_INSTANCES_EXECUTE, 200, conf);
 			break;
 		default:
 			throw new IOException("Invalid KNN type!");
