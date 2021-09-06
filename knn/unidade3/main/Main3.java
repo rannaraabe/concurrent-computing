@@ -1,4 +1,4 @@
-package knn;
+package main;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
@@ -7,11 +7,13 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.spark.SparkConf;
 
+import concurrent.Spark;
+
 /**
  * Running: java -Xms2G -Xmx6G Main.java
  * @author rannaraabe
  */
-public class Main {
+public class Main3 {
 	
 	enum KNNType {
 		SPARK,
