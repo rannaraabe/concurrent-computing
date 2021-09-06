@@ -74,8 +74,38 @@ THE POSSIBILITY OF SUCH DAMAGE.
 			<artifactId>ApacheJMeter_java</artifactId>
 			<version>5.1</version>
 		</dependency>
+		<dependency>
+		    <groupId>org.apache.spark</groupId>
+		    <artifactId>spark-core_2.12</artifactId>
+		    <version>3.1.2</version>
+		</dependency>
+		<dependency>
+	        <groupId>com.fasterxml.jackson.dataformat</groupId>
+	        <artifactId>jackson-dataformat-yaml</artifactId>
+	    </dependency>
+	    <dependency>
+	        <groupId>com.fasterxml.jackson.module</groupId>
+	        <artifactId>jackson-module-scala_2.12</artifactId>
+	        <scope>runtime</scope>
+	    </dependency>
+	    <dependency>
+	        <groupId>com.fasterxml.jackson.core</groupId>
+	        <artifactId>jackson-databind</artifactId>
+	    </dependency>
     </dependencies>
 
+	<dependencyManagement>
+	    <dependencies>
+	        <dependency>
+	            <groupId>com.fasterxml.jackson</groupId>
+	            <artifactId>jackson-bom</artifactId>
+	            <version>2.10.5.20201202</version>
+	            <type>pom</type>
+	            <scope>import</scope>
+	        </dependency>
+	    </dependencies>
+	</dependencyManagement>
+	
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
@@ -182,8 +212,14 @@ THE POSSIBILITY OF SUCH DAMAGE.
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>2.17</version>
                 </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.8.1</version>
+                </plugin>
             </plugins>
         </pluginManagement>
-    </build>
+        <defaultGoal>install</defaultGoal>
+    </build>    
 
 </project>
